@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec "$@"
+uv run alembic upgrade head
