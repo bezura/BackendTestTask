@@ -1,8 +1,11 @@
+import logging
+
 from fastapi import APIRouter
 from starlette import status
 from starlette.responses import JSONResponse
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/health")

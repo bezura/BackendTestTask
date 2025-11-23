@@ -1,15 +1,10 @@
 from datetime import datetime
-from enum import Enum as PyEnum
 
 from sqlalchemy import String, Enum, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base, int_pk
-
-
-class PRStatus(PyEnum):
-    OPEN = "OPEN"
-    MERGED = "MERGED"
+from app.schemas.schema_enums.pull_request_enums import PRStatus
 
 
 class PullRequest(Base):

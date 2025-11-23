@@ -6,7 +6,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import ORJSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from app.api.v1.health import router as health_router
+from app.api.v1.api import api_router
 from app.core.config import settings, logging_conf
 
 loggerDictConfig(logging_conf)
@@ -22,7 +22,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
 )
 
-app.include_router(health_router, prefix=settings.API_V1_PATH)
+app.include_router(api_router, prefix=settings.API_V1_PATH)
 
 if settings.CORS_ORIGINS:
     app.add_middleware(
