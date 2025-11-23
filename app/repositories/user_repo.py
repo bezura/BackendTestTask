@@ -3,8 +3,10 @@ from typing import Iterable
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.user import User
+from app.models.team import TeamMember
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,15 @@ class UserRepository:
 
     async def get_by_id(self, user_id: str) -> User | None:
         stmt = select(User).where(User.user_id == user_id)
+        result = await self._db_session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def get_with_team(self, user_id: str) -> User | None:
+        stmt = (
+            select(User)
+            .options(selectinload(User.teams).selectinload(TeamMember.team))
+            .where(User.user_id == user_id)
+        )
         result = await self._db_session.execute(stmt)
         return result.scalar_one_or_none()
 
