@@ -8,6 +8,8 @@ from app.schemas.pull_request import (
     PullRequestCreateResponse,
     PullRequestReassignRequest,
     PullRequestReassignResponse,
+    PullRequestMergeRequest,
+    PullRequestMergeResponse,
 )
 from app.services.pr_service import PRService
 
@@ -47,3 +49,18 @@ async def reassign_reviewer(
         old_reviewer_id=request.old_reviewer_id,
     )
     return PullRequestReassignResponse(pr=pr_dto, replaced_by=replaced_by)
+
+
+@router.post(
+    "/merge",
+    response_model=PullRequestMergeResponse,
+)
+async def merge_pull_request(
+        request: PullRequestMergeRequest,
+        db_session: DBSession,
+):
+    pr_dto = await service.merge_pr(
+        db_session=db_session,
+        pull_request_id=request.pull_request_id,
+    )
+    return PullRequestMergeResponse(pr=pr_dto)

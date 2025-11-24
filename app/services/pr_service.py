@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -56,6 +57,29 @@ class PRService:
             http_error(500, "NOT_FOUND", "PR not found after creation")
 
         return self._build_pr_dto(created_pr)
+
+    async def merge_pr(
+            self,
+            db_session: AsyncSession,
+            pull_request_id: str,
+    ) -> PullRequestDTO:
+
+        pr_repo = PullRequestRepository(db_session)
+
+        async with db_session.begin():
+            pr = await pr_repo.get_for_update(pull_request_id)
+            if not pr:
+                http_error(404, "NOT_FOUND", "PR not found")
+
+            if pr.status != PRStatus.MERGED:
+                pr.status = PRStatus.MERGED
+                pr.merged_at = datetime.now(timezone.utc)
+
+        merged_pr = await pr_repo.get_by_id(pull_request_id, with_reviewers=True)
+        if not merged_pr:
+            http_error(500, "NOT_FOUND", "PR not found after merge")
+
+        return self._build_pr_dto(merged_pr)
 
     async def reassign_reviewer(
             self,

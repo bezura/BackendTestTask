@@ -43,3 +43,11 @@ class PullRequestReassignRequest(BaseModel):
 class PullRequestReassignResponse(BaseModel):
     pr: PullRequestDTO
     replaced_by: str
+
+
+class PullRequestMergeRequest(BaseModel):
+    pull_request_id: str
+
+
+class PullRequestMergeResponse(BaseModel):
+    pr: PullRequestDTO
