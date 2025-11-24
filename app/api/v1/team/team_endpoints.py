@@ -22,6 +22,14 @@ async def add_team(
     request: TeamAddRequest,
     db_session: DBSession,
 ):
+    team = await service.create_team(db_session, request)
+    return TeamAddResponse(team=team)
+
+@router.post("/add_or_update", response_model=TeamAddResponse, status_code=201)
+async def add_team(
+    request: TeamAddRequest,
+    db_session: DBSession,
+):
     team = await service.create_or_update_team(db_session, request)
     return TeamAddResponse(team=team)
 

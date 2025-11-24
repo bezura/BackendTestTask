@@ -11,7 +11,7 @@ TEAM_PAYLOAD = {
 
 @pytest.mark.asyncio
 async def test_team_add_creates_team(client):
-    r = await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
+    r = await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
     assert r.status_code == 201
     data = r.json()["team"]
     assert data["team_name"] == "backend"
@@ -20,7 +20,7 @@ async def test_team_add_creates_team(client):
 
 @pytest.mark.asyncio
 async def test_team_get_returns_team(client):
-    await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
+    await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
 
     r = await client.get("/api/v1/team/get", params={"team_name": "backend"})
     assert r.status_code == 200
@@ -38,7 +38,7 @@ async def test_team_get_not_found(client):
 
 @pytest.mark.asyncio
 async def test_team_add_duplicate_should_conflict_by_openapi(client):
-    await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
-    r2 = await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
+    await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
+    r2 = await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
 
     assert r2.status_code in (200, 201)

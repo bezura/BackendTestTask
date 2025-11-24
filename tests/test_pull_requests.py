@@ -6,7 +6,7 @@ import app.services.pr_service as pr_service_module
 @pytest.mark.asyncio
 async def test_pr_create_assigns_two_reviewers_when_possible(client, monkeypatch):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -41,7 +41,7 @@ async def test_pr_create_assigns_two_reviewers_when_possible(client, monkeypatch
 @pytest.mark.asyncio
 async def test_pr_create_assigns_one_when_only_one_candidate(client, monkeypatch):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -68,7 +68,7 @@ async def test_pr_create_assigns_one_when_only_one_candidate(client, monkeypatch
 async def test_pr_create_404_when_author_has_no_team(client):
     # автор не существует
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "other",
             "members": [{"user_id": "uX", "username": "X", "is_active": True}],
@@ -91,7 +91,7 @@ async def test_pr_create_404_when_author_has_no_team(client):
 @pytest.mark.asyncio
 async def test_pr_merge_idempotent(client):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -125,7 +125,7 @@ async def test_pr_merge_idempotent(client):
 async def test_pr_reassign_success(client, monkeypatch):
     # team A: author u1, reviewers u2,u3,u4
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -167,7 +167,7 @@ async def test_pr_reassign_success(client, monkeypatch):
 @pytest.mark.asyncio
 async def test_pr_reassign_not_assigned(client, monkeypatch):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -203,7 +203,7 @@ async def test_pr_reassign_not_assigned(client, monkeypatch):
 async def test_pr_reassign_no_candidate(client, monkeypatch):
     # team: author u1, reviewer u2 only
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -237,7 +237,7 @@ async def test_pr_reassign_no_candidate(client, monkeypatch):
 @pytest.mark.asyncio
 async def test_pr_reassign_after_merge_forbidden(client, monkeypatch):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [

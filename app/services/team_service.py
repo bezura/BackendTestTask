@@ -17,6 +17,37 @@ from app.utils.http_exceptions import http_error
 
 
 class TeamService:
+    async def create_team(
+            self, db_session: AsyncSession, request: TeamAddRequest
+    ) -> TeamDTO:
+        team_repo = TeamRepository(db_session=db_session)
+        user_repo = UserRepository(db_session=db_session)
+
+
+        async with db_session.begin():
+            team = await team_repo.get_by_name(request.team_name, with_relation=True)
+            if team:
+                http_error(400, "TEAM_EXISTS", "Team already found")
+
+            team = await team_repo.create_team(request.team_name)
+
+            new_users_data = [
+                {
+                    "user_id": payload.user_id,
+                    "username": payload.username,
+                    "is_active": payload.is_active,
+                }
+                for payload in request.members
+            ]
+            await user_repo.create_many(new_users_data)
+
+            await team_repo.add_members_bulk(request.team_name, list([member.user_id for member in request.members]))
+            await db_session.flush()
+        db_session.expire_all()
+
+        team_with_members = await team_repo.get_by_name(request.team_name, with_relation=True)
+        return self._build_team_dto(team_with_members)
+
     async def create_or_update_team(
         self, db_session: AsyncSession, request: TeamAddRequest
     ) -> TeamDTO:

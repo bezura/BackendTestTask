@@ -42,7 +42,7 @@ export function setup() {
         ]
     };
 
-    http.post(url("/api/v1/team/add"), JSON.stringify(teamPayload), {
+    http.post(url("/api/v1/team/add_or_update"), JSON.stringify(teamPayload), {
         headers: {"Content-Type": "application/json"}
     });
 

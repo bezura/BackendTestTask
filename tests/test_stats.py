@@ -6,7 +6,7 @@ import app.services.pr_service as pr_service_module
 @pytest.mark.asyncio
 async def test_stats_counts(client, monkeypatch):
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [

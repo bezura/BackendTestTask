@@ -12,7 +12,7 @@ TEAM_PAYLOAD = {
 
 @pytest.mark.asyncio
 async def test_users_set_is_active_changes_flag(client):
-    await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
+    await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
 
     r = await client.post("/api/v1/users/setIsActive", json={"user_id": "u2", "is_active": False})
     assert r.status_code == 200
@@ -30,7 +30,7 @@ async def test_users_set_is_active_not_found(client):
 
 @pytest.mark.asyncio
 async def test_users_get_review_empty_list(client):
-    await client.post("/api/v1/team/add", json=TEAM_PAYLOAD)
+    await client.post("/api/v1/team/add_or_update", json=TEAM_PAYLOAD)
 
     r = await client.get("/api/v1/users/getReview", params={"user_id": "u2"})
     assert r.status_code == 200

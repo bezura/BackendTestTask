@@ -8,7 +8,7 @@ import app.services.team_service as team_service_module
 async def test_team_deactivate_users_reassigns_open_pr_reviewers(client, monkeypatch):
     # backend team: author u1, reviewers u2,u3,u4
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
@@ -71,7 +71,7 @@ async def test_team_deactivate_users_reassigns_open_pr_reviewers(client, monkeyp
 async def test_team_deactivate_users_safe_when_no_candidates(client, monkeypatch):
     # team: author u1, only reviewer candidate u2
     await client.post(
-        "/api/v1/team/add",
+        "/api/v1/team/add_or_update",
         json={
             "team_name": "backend",
             "members": [
