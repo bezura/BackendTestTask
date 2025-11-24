@@ -1,12 +1,12 @@
 import logging
 from typing import Iterable
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.user import User
 from app.models.team import TeamMember
+from app.models.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -78,3 +78,30 @@ class UserRepository:
         result = await self._db_session.execute(stmt)
         members = result.scalars().all()
         return {member.user_id for member in members}
+
+    async def get_team_member_ids(self, team_name: str) -> list[str]:
+        stmt = select(TeamMember.user_id).where(TeamMember.team_name == team_name)
+        res = await self._db_session.execute(stmt)
+        return list(res.scalars().all())
+
+    async def deactivate_users(self, user_ids: list[str]) -> int:
+        if not user_ids:
+            return 0
+        stmt = (
+            update(User)
+            .where(User.user_id.in_(user_ids))
+            .values(is_active=False)
+        )
+        res = await self._db_session.execute(stmt)
+        return res.rowcount or 0
+
+    async def get_users_with_teams(self, user_ids: list[str]) -> list[User]:
+        if not user_ids:
+            return []
+        stmt = (
+            select(User)
+            .where(User.user_id.in_(user_ids))
+            .options(selectinload(User.teams))
+        )
+        res = await self._db_session.execute(stmt)
+        return list(res.scalars().all())

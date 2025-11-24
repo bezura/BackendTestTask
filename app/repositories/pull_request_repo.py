@@ -1,8 +1,9 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.pull_request import PullRequest, PRReviewer
+from app.schemas.schema_enums.pull_request_enums import PRStatus
 
 
 class PullRequestRepository:
@@ -60,3 +61,25 @@ class PullRequestRepository:
             reviewer_id=new_user_id,
         )
         self._db_session.add(new_reviewer)
+
+    async def get_open_prs_with_reviewers(self, reviewer_ids: list[str]) -> list[PullRequest]:
+        if not reviewer_ids:
+            return []
+        stmt = (
+            select(PullRequest)
+            .join(PRReviewer)
+            .where(
+                PullRequest.status == PRStatus.OPEN,
+                PRReviewer.reviewer_id.in_(reviewer_ids),
+            )
+            .options(selectinload(PullRequest.reviewers))
+        )
+        res = await self._db_session.execute(stmt)
+        return list(res.scalars().unique().all())
+
+    async def remove_reviewer(self, pull_request_id: str, reviewer_id: str) -> None:
+        stmt = delete(PRReviewer).where(
+            PRReviewer.pull_request_id == pull_request_id,
+            PRReviewer.reviewer_id == reviewer_id,
+        )
+        await self._db_session.execute(stmt)
