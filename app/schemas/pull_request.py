@@ -4,6 +4,7 @@ from pydantic import ConfigDict, BaseModel
 
 from app.schemas.schema_enums.pull_request_enums import PRStatus
 
+
 class PullRequestCreateRequest(BaseModel):
     pull_request_id: str
     pull_request_name: str
@@ -32,3 +33,13 @@ class PullRequestShortDTO(BaseModel):
     status: PRStatus
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class PullRequestReassignRequest(BaseModel):
+    pull_request_id: str
+    old_reviewer_id: str
+
+
+class PullRequestReassignResponse(BaseModel):
+    pr: PullRequestDTO
+    replaced_by: str

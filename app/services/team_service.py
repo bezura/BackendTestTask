@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.team import Team
 from app.repositories.team_repo import TeamRepository
 from app.repositories.user_repo import UserRepository
 from app.schemas.team import TeamAddRequest, TeamDTO
 from app.schemas.user import TeamMemberDTO
-from app.models.team import Team
 from app.utils.http_exceptions import http_error
 
 
@@ -45,6 +45,8 @@ class TeamService:
             await team_repo.remove_members_by_user_ids(team.team_name, removed_member_ids)
 
             await team_repo.add_members_bulk(request.team_name, list(member_ids))
+            await db_session.flush()
+        db_session.expire_all()
 
         team_with_members = await team_repo.get_by_name(request.team_name, with_relation=True)
         return self._build_team_dto(team_with_members)

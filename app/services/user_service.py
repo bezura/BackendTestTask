@@ -20,7 +20,7 @@ class UserService:
             if not user:
                 http_error(404, "NOT_FOUND", "User not found")
             user.is_active = payload.is_active
-            response = UserSetIsActiveResponse(user=self._build_user_dto(user))
+        response = UserSetIsActiveResponse(user=self._build_user_dto(user))
         return response
 
     async def get_reviews(self, db_session: AsyncSession, user_id: str) -> UserReviewsResponse:

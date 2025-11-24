@@ -37,3 +37,26 @@ class PullRequestRepository:
         )
         result = await self._db_session.execute(stmt)
         return list(result.scalars())
+
+    async def get_for_update(self, pull_request_id: str) -> PullRequest | None:
+        stmt = (
+            select(PullRequest)
+            .where(PullRequest.pull_request_id == pull_request_id)
+            .with_for_update()
+            .options(selectinload(PullRequest.reviewers))
+        )
+        result = await self._db_session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def replace_reviewer(self, pr: PullRequest, old_reviewer_id: str, new_user_id: str) -> None:
+        pr.reviewers = [r for r in pr.reviewers if r.reviewer_id != old_reviewer_id]
+
+        existing_ids = {r.reviewer_id for r in pr.reviewers}
+        if new_user_id in existing_ids:
+            return
+
+        new_reviewer = PRReviewer(
+            pull_request_id=pr.pull_request_id,
+            reviewer_id=new_user_id,
+        )
+        self._db_session.add(new_reviewer)
