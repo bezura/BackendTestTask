@@ -51,3 +51,30 @@ class UserRepository:
         ]
         self._db_session.add_all(users)
         return users
+
+    async def get_active_review_candidates_for_author(self, author: User) -> set[str]:
+        """Вернуть множество user_id активных кандидатов в ревьюверы для автора.
+
+        Кандидаты — все активные пользователи из команд автора (включая самого автора;
+        исключение автора делается на уровне сервисного слоя).
+        Если у автора нет команд, возвращаем пустое множество — сервис сам решит,
+        считать ли это ошибкой или ситуацией без ревьюверов.
+        """
+        if not author.teams:
+            return set()
+
+        team_names = [member.team_name for member in author.teams]
+        if not team_names:
+            return set()
+
+        stmt = (
+            select(TeamMember)
+            .join(User, TeamMember.user_id == User.user_id)
+            .where(
+                TeamMember.team_name.in_(team_names),
+                User.is_active.is_(True),
+            )
+        )
+        result = await self._db_session.execute(stmt)
+        members = result.scalars().all()
+        return {member.user_id for member in members}
