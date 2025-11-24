@@ -33,6 +33,6 @@ class StatsService:
             ],
             pr_count_by_status=PrCountByStatus(
                 OPEN=status_counts.get(PRStatus.OPEN, 0),
-                MERGED=status_counts.get(PRStatus.OPEN, 0),
+                MERGED=status_counts.get(PRStatus.MERGED, 0),
             ),
         )

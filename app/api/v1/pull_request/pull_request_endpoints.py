@@ -21,10 +21,11 @@ service = PRService()
 @router.post(
     "/create",
     response_model=PullRequestCreateResponse,
+    status_code=201
 )
 async def create_pull_request(
-    request: PullRequestCreateRequest,
-    db_session: DBSession,
+        request: PullRequestCreateRequest,
+        db_session: DBSession,
 ):
     pr = await service.create_pr(
         db_session=db_session,

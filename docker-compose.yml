@@ -8,21 +8,30 @@ services:
     container_name: reviewer-api
     ports:
       - "8080:8080"
-#    environment:
-#      - DB_USER: str = "postgres"
-#      - DB_PASS: str | None = None
-#      - DB_NAME: str = "postgres"
-#      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
+    env_file:
+      - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    entrypoint: [ "sh", "/app/entrypoint.sh" ]
+    command: [ "uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080" ]
+
 
   db:
     image: postgres:17
     container_name: reviewer-db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${DB_USER} -d $${DB_NAME}" ]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
