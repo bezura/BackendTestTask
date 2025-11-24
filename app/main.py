@@ -1,5 +1,5 @@
-from logging.config import dictConfig as loggerDictConfig
 import logging
+from logging.config import dictConfig as loggerDictConfig
 
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
@@ -7,7 +7,7 @@ from fastapi.responses import ORJSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
-from app.core.config import settings, logging_conf
+from app.core.config import logging_conf, settings
 
 loggerDictConfig(logging_conf)
 
@@ -50,4 +50,4 @@ def custom_openapi():
     return app.openapi_schema
 
 
-app.openapi = custom_openapi
+app.openapi = custom_openapi  # type: ignore[method-assign]

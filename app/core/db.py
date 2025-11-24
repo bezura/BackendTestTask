@@ -1,8 +1,8 @@
 import datetime
-from typing import Annotated
+from typing import Annotated, ClassVar
 
-from sqlalchemy import BigInteger, text, ARRAY, Integer
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy import ARRAY, BigInteger, Integer, text
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
 from app.core.config import settings
@@ -17,16 +17,15 @@ AsyncSessionLocal = async_sessionmaker(
 int_pk = Annotated[int, mapped_column(BigInteger, primary_key=True, autoincrement=True)]
 
 created_at = Annotated[
-    datetime.datetime,
-    mapped_column(server_default=text("TIMEZONE('utc', now())"), nullable=False)
+    datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', now())"), nullable=False)
 ]
+
+
 class Base(DeclarativeBase):
     repr_cols_num: int = 3
     repr_cols: tuple = ()
 
-    type_annotation_map = {
-        list[int]: ARRAY(Integer)
-    }
+    type_annotation_map: ClassVar[dict] = {list[int]: ARRAY(Integer)}
 
     def __repr__(self) -> str:
         cols = [

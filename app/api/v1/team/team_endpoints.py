@@ -6,7 +6,9 @@ from app.api.dependencies import DBSession
 from app.schemas.team import (
     TeamAddRequest,
     TeamAddResponse,
-    TeamGetResponse, TeamDeactivateUsersResponse, TeamDeactivateUsersRequest
+    TeamDeactivateUsersRequest,
+    TeamDeactivateUsersResponse,
+    TeamGetResponse,
 )
 from app.services.team_service import TeamService
 
@@ -15,11 +17,7 @@ logger = logging.getLogger(__name__)
 service = TeamService()
 
 
-@router.post(
-    "/add",
-    response_model=TeamAddResponse,
-    status_code=201
-)
+@router.post("/add", response_model=TeamAddResponse, status_code=201)
 async def add_team(
         request: TeamAddRequest,
         db_session: DBSession,
@@ -40,10 +38,7 @@ async def get_team(
     return TeamGetResponse(team=team)
 
 
-@router.post(
-    "/deactivateUsers",
-    response_model=TeamDeactivateUsersResponse
-)
+@router.post("/deactivateUsers", response_model=TeamDeactivateUsersResponse)
 async def deactivate_users(
         payload: TeamDeactivateUsersRequest,
         db: DBSession,

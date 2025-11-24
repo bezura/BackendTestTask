@@ -4,16 +4,18 @@ from app.repositories.pull_request_repo import PullRequestRepository
 from app.repositories.user_repo import UserRepository
 from app.schemas.pull_request import PullRequestShortDTO
 from app.schemas.user import (
+    UserDTO,
+    UserReviewsResponse,
     UserSetIsActiveRequest,
     UserSetIsActiveResponse,
-    UserReviewsResponse,
-    UserDTO,
 )
 from app.utils.http_exceptions import http_error
 
 
 class UserService:
-    async def set_active(self, db_session: AsyncSession, payload: UserSetIsActiveRequest) -> UserSetIsActiveResponse:
+    async def set_active(
+            self, db_session: AsyncSession, payload: UserSetIsActiveRequest
+    ) -> UserSetIsActiveResponse:
         repo = UserRepository(db_session)
         async with db_session.begin():
             user = await repo.get_with_team(payload.user_id)

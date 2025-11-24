@@ -6,14 +6,20 @@ from app.models.team import Team
 from app.repositories.pull_request_repo import PullRequestRepository
 from app.repositories.team_repo import TeamRepository
 from app.repositories.user_repo import UserRepository
-from app.schemas.team import TeamAddRequest, TeamDTO, TeamDeactivateUsersRequest, TeamDeactivateUsersResponse
+from app.schemas.team import (
+    TeamAddRequest,
+    TeamDeactivateUsersRequest,
+    TeamDeactivateUsersResponse,
+    TeamDTO,
+)
 from app.schemas.user import TeamMemberDTO
 from app.utils.http_exceptions import http_error
 
 
 class TeamService:
-
-    async def create_or_update_team(self, db_session: AsyncSession, request: TeamAddRequest) -> TeamDTO:
+    async def create_or_update_team(
+            self, db_session: AsyncSession, request: TeamAddRequest
+    ) -> TeamDTO:
         team_repo = TeamRepository(db_session=db_session)
         user_repo = UserRepository(db_session=db_session)
 
@@ -62,7 +68,7 @@ class TeamService:
         return self._build_team_dto(team)
 
     def _build_team_dto(self, team: Team | None) -> TeamDTO:
-        if team is None:
+        if not team:
             http_error(404, "NOT_FOUND", "Team not found")
         members = []
         for member in team.members:
@@ -131,7 +137,9 @@ class TeamService:
                         current_reviewers.discard(old_id)
                         continue
 
-                    candidate_ids = await user_repo.get_active_review_candidates_for_author(old_user)
+                    candidate_ids = await user_repo.get_active_review_candidates_for_author(
+                        old_user
+                    )
 
                     forbidden = {pr.author_id, old_id} | (current_reviewers - {old_id})
                     candidate_ids = {cid for cid in candidate_ids if cid not in forbidden}

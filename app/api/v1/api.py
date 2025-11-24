@@ -8,22 +8,14 @@ from app.api.v1.user import user_endpoints
 
 api_router = APIRouter()
 
-api_router.include_router(
-    health_endpoints.router, tags=["health"]
-)
+api_router.include_router(health_endpoints.router, tags=["health"])
 
-api_router.include_router(
-    team_endpoints.router, prefix="/team", tags=["team"]
-)
+api_router.include_router(team_endpoints.router, prefix="/team", tags=["team"])
 
-api_router.include_router(
-    user_endpoints.router, prefix="/users", tags=["users"]
-)
+api_router.include_router(user_endpoints.router, prefix="/users", tags=["users"])
 
 api_router.include_router(
     pull_request_endpoints.router, prefix="/pullRequest", tags=["PullRequests"]
 )
 
-api_router.include_router(
-    stats_endpoints.router, tags=["stats"]
-)
+api_router.include_router(stats_endpoints.router, tags=["stats"])

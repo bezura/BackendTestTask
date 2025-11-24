@@ -1,11 +1,9 @@
-from typing import List
-
 from pydantic import BaseModel
-
 
 # ---- requests ----
 
 # ---- inner DTO ----
+
 
 class ReviewerAssignmentStats(BaseModel):
     user_id: str
@@ -24,8 +22,9 @@ class PrCountByStatus(BaseModel):
 
 # ---- responses ----
 
+
 class StatsResponse(BaseModel):
-    assignments_per_reviewer: List[ReviewerAssignmentStats]
-    open_prs_per_author: List[AuthorPrStats]
-    merged_prs_per_author: List[AuthorPrStats]
+    assignments_per_reviewer: list[ReviewerAssignmentStats]
+    open_prs_per_author: list[AuthorPrStats]
+    merged_prs_per_author: list[AuthorPrStats]
     pr_count_by_status: PrCountByStatus

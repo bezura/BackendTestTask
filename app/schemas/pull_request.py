@@ -1,12 +1,12 @@
 import datetime
-from datetime import timezone
 
-from pydantic import ConfigDict, BaseModel, field_serializer
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 from app.schemas.schema_enums.pull_request_enums import PRStatus
 
 
 # ---- requests ----
+
 
 class PullRequestCreateRequest(BaseModel):
     pull_request_id: str
@@ -24,6 +24,7 @@ class PullRequestMergeRequest(BaseModel):
 
 
 # ---- inner DTO ----
+
 
 class PullRequestShortDTO(BaseModel):
     pull_request_id: str
@@ -54,11 +55,12 @@ class PullRequestDTO(BaseModel):
             local_tz = datetime.datetime.now().astimezone().tzinfo
             v = v.replace(tzinfo=local_tz)
 
-        v = v.astimezone(timezone.utc)
+        v = v.astimezone(datetime.UTC)
         return v.isoformat().replace("+00:00", "Z")
 
 
 # ---- responses ----
+
 
 class PullRequestCreateResponse(BaseModel):
     pr: PullRequestDTO

@@ -4,9 +4,9 @@ from fastapi import APIRouter
 
 from app.api.dependencies import DBSession
 from app.schemas.user import (
+    UserReviewsResponse,
     UserSetIsActiveRequest,
     UserSetIsActiveResponse,
-    UserReviewsResponse,
 )
 from app.services.user_service import UserService
 
@@ -23,4 +23,3 @@ async def set_is_active(request: UserSetIsActiveRequest, db_session: DBSession):
 @router.get("/getReview", response_model=UserReviewsResponse)
 async def get_review(user_id: str, db_session: DBSession):
     return await service.get_reviews(db_session, user_id)
-

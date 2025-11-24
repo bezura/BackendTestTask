@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable
+from collections.abc import Iterable
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class UserRepository:
-
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
 
@@ -53,12 +52,8 @@ class UserRepository:
         return users
 
     async def get_active_review_candidates_for_author(self, author: User) -> set[str]:
-        """Вернуть множество user_id активных кандидатов в ревьюверы для автора.
-
-        Кандидаты — все активные пользователи из команд автора (включая самого автора;
-        исключение автора делается на уровне сервисного слоя).
-        Если у автора нет команд, возвращаем пустое множество — сервис сам решит,
-        считать ли это ошибкой или ситуацией без ревьюверов.
+        """
+        Candidates — all active users from author's teams. If author has no teams, return empty set.
         """
         if not author.teams:
             return set()
@@ -87,21 +82,13 @@ class UserRepository:
     async def deactivate_users(self, user_ids: list[str]) -> int:
         if not user_ids:
             return 0
-        stmt = (
-            update(User)
-            .where(User.user_id.in_(user_ids))
-            .values(is_active=False)
-        )
+        stmt = update(User).where(User.user_id.in_(user_ids)).values(is_active=False)
         res = await self._db_session.execute(stmt)
-        return res.rowcount or 0
+        return res.rowcount or 0  # type: ignore[attr-defined]
 
     async def get_users_with_teams(self, user_ids: list[str]) -> list[User]:
         if not user_ids:
             return []
-        stmt = (
-            select(User)
-            .where(User.user_id.in_(user_ids))
-            .options(selectinload(User.teams))
-        )
+        stmt = select(User).where(User.user_id.in_(user_ids)).options(selectinload(User.teams))
         res = await self._db_session.execute(stmt)
         return list(res.scalars().all())

@@ -2,12 +2,12 @@ import os
 
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_sessionmaker,
     AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 from app.api.dependencies import get_session
@@ -47,7 +47,7 @@ async def _clean_db(engine):
 
 @pytest_asyncio.fixture
 async def client(engine):
-    SessionLocal = async_sessionmaker(
+    session_local = async_sessionmaker(
         bind=engine,
         expire_on_commit=False,
         class_=AsyncSession,
@@ -55,7 +55,7 @@ async def client(engine):
     )
 
     async def _override_get_session():
-        async with SessionLocal() as session:
+        async with session_local() as session:
             await session.execute(text(f'SET search_path TO "{TEST_SCHEMA}"'))
             await session.commit()
             yield session

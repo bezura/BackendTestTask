@@ -6,10 +6,10 @@ from app.api.dependencies import DBSession
 from app.schemas.pull_request import (
     PullRequestCreateRequest,
     PullRequestCreateResponse,
-    PullRequestReassignRequest,
-    PullRequestReassignResponse,
     PullRequestMergeRequest,
     PullRequestMergeResponse,
+    PullRequestReassignRequest,
+    PullRequestReassignResponse,
 )
 from app.services.pr_service import PRService
 
@@ -18,11 +18,7 @@ logger = logging.getLogger(__name__)
 service = PRService()
 
 
-@router.post(
-    "/create",
-    response_model=PullRequestCreateResponse,
-    status_code=201
-)
+@router.post("/create", response_model=PullRequestCreateResponse, status_code=201)
 async def create_pull_request(
         request: PullRequestCreateRequest,
         db_session: DBSession,

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.user import TeamMemberDTO
@@ -7,9 +5,11 @@ from app.schemas.user import TeamMemberDTO
 
 # ---- requests ----
 
+
 class TeamAddRequest(BaseModel):
     team_name: str
-    members: List[TeamMemberDTO]
+    members: list[TeamMemberDTO]
+
 
 class TeamGetRequest(BaseModel):
     team_name: str
@@ -17,23 +17,26 @@ class TeamGetRequest(BaseModel):
 
 class TeamDeactivateUsersRequest(BaseModel):
     team_name: str
-    user_ids: Optional[List[str]] = None
+    user_ids: list[str] | None = None
 
 
 # ---- inner DTO ----
 
+
 class TeamDTO(BaseModel):
     team_name: str
-    members: List[TeamMemberDTO]
+    members: list[TeamMemberDTO]
 
     model_config = ConfigDict(from_attributes=True)
 
 
 # ---- responses ----
 
+
 class TeamAddResponse(BaseModel):
     team: TeamDTO
     model_config = ConfigDict(from_attributes=True)
+
 
 class TeamGetResponse(BaseModel):
     team: TeamDTO
@@ -42,7 +45,7 @@ class TeamGetResponse(BaseModel):
 
 class TeamDeactivateUsersResponse(BaseModel):
     team_name: str
-    deactivated: List[str]
+    deactivated: list[str]
     reassigned_prs: int
 
     model_config = ConfigDict(from_attributes=True)

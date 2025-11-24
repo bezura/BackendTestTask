@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import random
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -21,7 +21,6 @@ class PRService:
         pull_request_name: str,
         author_id: str,
     ) -> PullRequestDTO:
-
         pr_repo = PullRequestRepository(db_session)
         user_repo = UserRepository(db_session)
 
@@ -63,7 +62,6 @@ class PRService:
             db_session: AsyncSession,
             pull_request_id: str,
     ) -> PullRequestDTO:
-
         pr_repo = PullRequestRepository(db_session)
 
         async with db_session.begin():
@@ -73,7 +71,7 @@ class PRService:
 
             if pr.status != PRStatus.MERGED:
                 pr.status = PRStatus.MERGED
-                pr.merged_at = datetime.now(timezone.utc)
+                pr.merged_at = datetime.now(UTC)
 
         merged_pr = await pr_repo.get_by_id(pull_request_id, with_reviewers=True)
         if not merged_pr:
@@ -87,7 +85,6 @@ class PRService:
             pull_request_id: str,
             old_reviewer_id: str,
     ) -> tuple[PullRequestDTO, str]:
-
         pr_repo = PullRequestRepository(db_session)
         user_repo = UserRepository(db_session)
 
@@ -118,7 +115,9 @@ class PRService:
 
             new_reviewer_id = self._choose_replacement_reviewer(candidate_ids)
 
-            await pr_repo.replace_reviewer(pr, old_reviewer_id=old_reviewer_id, new_user_id=new_reviewer_id)
+            await pr_repo.replace_reviewer(
+                pr, old_reviewer_id=old_reviewer_id, new_user_id=new_reviewer_id
+            )
             await db_session.flush()
         db_session.expire_all()
         updated_pr = await pr_repo.get_by_id(pull_request_id, with_reviewers=True)
@@ -131,7 +130,6 @@ class PRService:
         return random.choice(list(candidate_ids))
 
     def _choose_reviewers(self, candidate_ids: set[str], author_id: str) -> list[str]:
-
         candidate_ids = {uid for uid in candidate_ids if uid != author_id}
 
         if not candidate_ids:

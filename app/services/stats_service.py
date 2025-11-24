@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.stats_repo import StatsRepository
 from app.schemas.schema_enums.pull_request_enums import PRStatus
 from app.schemas.stats import (
-    StatsResponse,
-    ReviewerAssignmentStats,
     AuthorPrStats,
     PrCountByStatus,
+    ReviewerAssignmentStats,
+    StatsResponse,
 )
 
 
@@ -24,15 +24,13 @@ class StatsService:
                 for user_id, count in assignments
             ],
             open_prs_per_author=[
-                AuthorPrStats(user_id=user_id, count=count)
-                for user_id, count in open_prs
+                AuthorPrStats(user_id=user_id, count=count) for user_id, count in open_prs
             ],
             merged_prs_per_author=[
-                AuthorPrStats(user_id=user_id, count=count)
-                for user_id, count in merged_prs
+                AuthorPrStats(user_id=user_id, count=count) for user_id, count in merged_prs
             ],
             pr_count_by_status=PrCountByStatus(
-                OPEN=status_counts.get(PRStatus.OPEN, 0),
-                MERGED=status_counts.get(PRStatus.MERGED, 0),
+                OPEN=status_counts.get(PRStatus.OPEN.value, 0),
+                MERGED=status_counts.get(PRStatus.MERGED.value, 0),
             ),
         )

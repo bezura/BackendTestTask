@@ -1,9 +1,11 @@
 import os
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 class EnvBaseSettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -36,10 +38,7 @@ class DBSettings(EnvBaseSettings):
                 f"postgresql://{self.DB_USER}:{self.DB_PASS}"
                 f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
             )
-        return (
-            f"postgresql://{self.DB_USER}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        )
+        return f"postgresql://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     @property
     def postgres_async_url(self) -> str:
@@ -49,18 +48,17 @@ class DBSettings(EnvBaseSettings):
                 f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
                 f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
             )
-        return (
-            f"postgresql+asyncpg://{self.DB_USER}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        )
+        return f"postgresql+asyncpg://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 
 class Settings(ProjectSettings, DBSettings):
     pass
 
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()
 
@@ -70,8 +68,7 @@ logging_conf = {
     "disable_existing_loggers": False,
     "formatters": {
         "console": {
-            "format": "{name} {levelname} {asctime} {module} "
-                      "{process:d} {thread:d} {message}",
+            "format": "{name} {levelname} {asctime} {module} {process:d} {thread:d} {message}",
             "style": "{",
         },
     },

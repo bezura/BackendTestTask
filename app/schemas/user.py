@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.pull_request import PullRequestShortDTO
@@ -7,12 +5,14 @@ from app.schemas.pull_request import PullRequestShortDTO
 
 # ---- requests ----
 
+
 class UserSetIsActiveRequest(BaseModel):
     user_id: str
     is_active: bool
 
 
 # ---- inner DTO ----
+
 
 class TeamMemberDTO(BaseModel):
     user_id: str
@@ -33,10 +33,11 @@ class UserDTO(BaseModel):
 
 # ---- responses ----
 
+
 class UserSetIsActiveResponse(BaseModel):
     user: UserDTO
 
 
 class UserReviewsResponse(BaseModel):
     user_id: str
-    pull_requests: List[PullRequestShortDTO]
+    pull_requests: list[PullRequestShortDTO]

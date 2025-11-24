@@ -22,5 +22,59 @@ dependencies = [
 dev = [
     "aiosqlite>=0.21.0",
     "asgi-lifespan>=2.1.0",
+    "black>=25.11.0",
+    "mypy>=1.18.2",
     "ruff>=0.14.6",
 ]
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+skip-string-normalization = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+respect-gitignore = true
+
+lint.select = [
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "W", # pycodestyle warnings
+    "I", # isort (импорты)
+    "B", # bugbear
+    "UP", # pyupgrade
+    "N", # pep8-naming
+    "ASYNC", # async best practices
+    "A", # builtins shadowing
+    "C4", # comprehensions
+    "T20", # print/debug
+    "SIM", # simplify
+    "RUF", # ruff-specific
+]
+
+lint.ignore = [
+    "E501", # длину строк контролит black
+]
+
+exclude = [
+    ".venv",
+    "alembic",
+    "migrations",
+    "__pycache__",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["app", "tests"]
+
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_return_any = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+plugins = ["sqlalchemy.ext.mypy.plugin"]
