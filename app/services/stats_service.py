@@ -30,7 +30,7 @@ class StatsService:
                 AuthorPrStats(user_id=user_id, count=count) for user_id, count in merged_prs
             ],
             pr_count_by_status=PrCountByStatus(
-                OPEN=status_counts.get(PRStatus.OPEN.value, 0),
-                MERGED=status_counts.get(PRStatus.MERGED.value, 0),
+                OPEN=status_counts.get(PRStatus.OPEN, 0),
+                MERGED=status_counts.get(PRStatus.MERGED, 0),
             ),
         )

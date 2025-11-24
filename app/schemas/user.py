@@ -2,7 +2,6 @@ from pydantic import BaseModel, ConfigDict
 
 from app.schemas.pull_request import PullRequestShortDTO
 
-
 # ---- requests ----
 
 

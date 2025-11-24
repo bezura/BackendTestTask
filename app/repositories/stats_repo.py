@@ -2,6 +2,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.pull_request import PRReviewer, PullRequest
+from app.schemas.schema_enums.pull_request_enums import PRStatus
 
 
 class StatsRepository:
@@ -31,7 +32,7 @@ class StatsRepository:
         result = await self._db_session.execute(stmt)
         return [(row[0], row[1]) for row in result.all()]
 
-    async def get_pr_count_by_status(self) -> dict[str, int]:
+    async def get_pr_count_by_status(self) -> dict[PRStatus, int]:
         stmt = select(PullRequest.status, func.count()).group_by(PullRequest.status)
         result = await self._db_session.execute(stmt)
         rows = result.all()

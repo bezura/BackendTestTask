@@ -58,9 +58,9 @@ class PRService:
         return self._build_pr_dto(created_pr)
 
     async def merge_pr(
-            self,
-            db_session: AsyncSession,
-            pull_request_id: str,
+        self,
+        db_session: AsyncSession,
+        pull_request_id: str,
     ) -> PullRequestDTO:
         pr_repo = PullRequestRepository(db_session)
 
@@ -80,10 +80,10 @@ class PRService:
         return self._build_pr_dto(merged_pr)
 
     async def reassign_reviewer(
-            self,
-            db_session: AsyncSession,
-            pull_request_id: str,
-            old_reviewer_id: str,
+        self,
+        db_session: AsyncSession,
+        pull_request_id: str,
+        old_reviewer_id: str,
     ) -> tuple[PullRequestDTO, str]:
         pr_repo = PullRequestRepository(db_session)
         user_repo = UserRepository(db_session)

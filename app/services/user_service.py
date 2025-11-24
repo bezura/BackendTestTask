@@ -14,7 +14,7 @@ from app.utils.http_exceptions import http_error
 
 class UserService:
     async def set_active(
-            self, db_session: AsyncSession, payload: UserSetIsActiveRequest
+        self, db_session: AsyncSession, payload: UserSetIsActiveRequest
     ) -> UserSetIsActiveResponse:
         repo = UserRepository(db_session)
         async with db_session.begin():

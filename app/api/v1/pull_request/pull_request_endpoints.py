@@ -20,8 +20,8 @@ service = PRService()
 
 @router.post("/create", response_model=PullRequestCreateResponse, status_code=201)
 async def create_pull_request(
-        request: PullRequestCreateRequest,
-        db_session: DBSession,
+    request: PullRequestCreateRequest,
+    db_session: DBSession,
 ):
     pr = await service.create_pr(
         db_session=db_session,
@@ -37,8 +37,8 @@ async def create_pull_request(
     response_model=PullRequestReassignResponse,
 )
 async def reassign_reviewer(
-        request: PullRequestReassignRequest,
-        db_session: DBSession,
+    request: PullRequestReassignRequest,
+    db_session: DBSession,
 ):
     pr_dto, replaced_by = await service.reassign_reviewer(
         db_session=db_session,
@@ -53,8 +53,8 @@ async def reassign_reviewer(
     response_model=PullRequestMergeResponse,
 )
 async def merge_pull_request(
-        request: PullRequestMergeRequest,
-        db_session: DBSession,
+    request: PullRequestMergeRequest,
+    db_session: DBSession,
 ):
     pr_dto = await service.merge_pr(
         db_session=db_session,

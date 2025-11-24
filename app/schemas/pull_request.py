@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict, field_serializer
 
 from app.schemas.schema_enums.pull_request_enums import PRStatus
 
-
 # ---- requests ----
 
 

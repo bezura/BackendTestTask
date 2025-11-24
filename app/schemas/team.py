@@ -2,7 +2,6 @@ from pydantic import BaseModel, ConfigDict
 
 from app.schemas.user import TeamMemberDTO
 
-
 # ---- requests ----
 
 

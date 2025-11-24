@@ -11,7 +11,7 @@ class PullRequestRepository:
         self._db_session = db_session
 
     async def get_by_id(
-            self, pull_request_id: str, with_reviewers: bool = False
+        self, pull_request_id: str, with_reviewers: bool = False
     ) -> PullRequest | None:
         stmt = select(PullRequest).where(PullRequest.pull_request_id == pull_request_id)
         if with_reviewers:
@@ -50,7 +50,7 @@ class PullRequestRepository:
         return result.scalar_one_or_none()
 
     async def replace_reviewer(
-            self, pr: PullRequest, old_reviewer_id: str, new_user_id: str
+        self, pr: PullRequest, old_reviewer_id: str, new_user_id: str
     ) -> None:
         pr.reviewers = [r for r in pr.reviewers if r.reviewer_id != old_reviewer_id]
 

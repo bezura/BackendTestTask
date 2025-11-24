@@ -18,7 +18,7 @@ from app.utils.http_exceptions import http_error
 
 class TeamService:
     async def create_or_update_team(
-            self, db_session: AsyncSession, request: TeamAddRequest
+        self, db_session: AsyncSession, request: TeamAddRequest
     ) -> TeamDTO:
         team_repo = TeamRepository(db_session=db_session)
         user_repo = UserRepository(db_session=db_session)
@@ -83,9 +83,9 @@ class TeamService:
         return TeamDTO(team_name=team.team_name, members=members)
 
     async def deactivate_users_and_reassign_prs(
-            self,
-            db_session: AsyncSession,
-            payload: TeamDeactivateUsersRequest,
+        self,
+        db_session: AsyncSession,
+        payload: TeamDeactivateUsersRequest,
     ) -> TeamDeactivateUsersResponse:
         team_repo = TeamRepository(db_session)
         user_repo = UserRepository(db_session)
